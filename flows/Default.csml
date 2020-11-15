@@ -1,0 +1,51 @@
+start:
+  if (!language) goto pickLanguage
+  say translate("en", language, "Hi, I am the chatbot that find awesome recipes for you!")
+  goto dishType
+
+pickLanguage:
+  do availableLang = ["fr", "en", "de", "es", "pt", "it", "jp", "cn", "ru"]
+  say Question("What language should we speak?",
+    button_type="quick_reply",
+    buttons=availableLang)
+  hold
+  if (!availableLang.find(event)) {
+    say "You should click on one of the buttons 🙃"
+    goto pickLanguage
+  }
+  remember language = event
+  say "Ok! Let's spreak {{language}}"
+  goto start
+
+dishType:
+  say translate("en", language, "What type of dish are you looking for (tart, stew, ...)?")
+  hold
+  remember dType = translate(language, "en", event)
+  goto dishIngredient
+
+dishIngredient:
+  say translate("en", language, "What ingredient would you like in the recipe?")
+  hold
+  remember dIngredient = translate(language, "en", event)
+  say translate("en", language, "Ok! Let me find the right recipes for you! This may take a few seconds")
+  goto results
+
+results:
+  do response = HTTP("http://www.recipepuppy.com/api/?i={{dIngredient}}&q={{dType}}").get().send()
+  if (response.results.length() == 0) {
+    say translate("en", language, "I am sorry I have no recipe matching your query")
+    goto dishType
+  }
+  do recipe = OneOf(response.results)
+  do tTitle = translate("en", language, recipe.title)
+  do tIngredients = translate("en", language, "Ingredients: {{recipe.ingredients}}")
+  say translate("en", language, "Here is an awesome recipe for you:")
+  say "**{{tTitle}}**
+  *{{tIngredients}}*"
+  say Url(recipe.href, text=tTitle)
+  goto end
+
+fn translate(from, to, text):
+  if (from == to) return text
+  do t = Fn("deepl", from=from, to=to, text=text)
+  return t.translations[0].text
