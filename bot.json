@@ -1,0 +1,33 @@
+{
+  "id": "d3f8facb-0bb1-4443-8a31-660b843bd539",
+  "name": "TranslationBot",
+  "description": null,
+  "default_flow": "Default",
+  "flows": [
+    {
+      "name": "Default",
+      "description": "Simple barebones flow. Code your own chatbot from this template!",
+      "commands": []
+    }
+  ],
+  "files": [],
+  "functions": [],
+  "apps": [
+    {
+      "name": "deepl",
+      "description": "Translate any text to and from dozens of languages with [Deepl](https://www.deepl.com)!",
+      "args": [
+        "from=\"\"",
+        "text=\"\"",
+        "to=\"\""
+      ],
+      "runtime": "nodejs12.x",
+      "handler": "index.handler",
+      "environment": {
+        "API_KEY": ""
+      },
+      "app_id": "3a463be3-ac78-4647-b410-63b1efadf885",
+      "version": "1.0.0"
+    }
+  ]
+}
