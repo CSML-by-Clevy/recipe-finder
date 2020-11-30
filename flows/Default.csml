@@ -47,5 +47,5 @@ results:
 
 fn translate(from, to, text):
   if (from == to) return text
-  do t = Fn("deepl", from=from, to=to, text=text)
+  do t = Fn("amazon/translate", from=from, to=to, text=text)
   return t.translations[0].text
